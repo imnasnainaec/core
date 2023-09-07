@@ -511,15 +511,22 @@ export default class MaterialTable extends React.Component {
         this.props.onRowsPerPageChange(pageSize);
     };
 
-    if (this.isRemoteData()) {
-      const query = { ...this.state.query };
-      query.pageSize = event.target.value;
-      query.page = 0;
-      this.onQueryChange(query, callback);
-    } else {
-      this.dataManager.changeCurrentPage(0);
-      this.setState(this.dataManager.getRenderState(), callback);
-    }
+    this.setState({ isLoading: true }, () => {
+      if (this.isRemoteData()) {
+        const query = { ...this.state.query };
+        query.pageSize = event.target.value;
+        query.page = 0;
+        this.setState({ isLoading: false }, () => {
+          this.onQueryChange(query, callback);
+        });
+      } else {
+        this.dataManager.changeCurrentPage(0);
+        this.setState(
+          { ...this.dataManager.getRenderState(), isLoading: false },
+          callback
+        );
+      }
+    });
   };
 
   onDragEnd = (result) => {
