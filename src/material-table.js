@@ -485,26 +485,34 @@ export default class MaterialTable extends React.Component {
   };
 
   onPageChange = (event, page) => {
-    if (this.isRemoteData()) {
-      const query = { ...this.state.query };
-      query.page = page;
-      this.onQueryChange(query, () => {
-        this.props.onPageChange &&
-          this.props.onPageChange(page, query.pageSize);
-      });
-    } else {
-      this.dataManager.changeCurrentPage(page);
-      this.setState(this.dataManager.getRenderState(), () => {
-        this.props.onPageChange &&
-          this.props.onPageChange(page, this.state.pageSize);
-      });
-    }
+    this.setState({ isLoading: true }, () => {
+      if (this.isRemoteData()) {
+        const query = { ...this.state.query };
+        query.page = page;
+        this.setState({ isLoading: false }, () => {
+          this.onQueryChange(query, () => {
+            this.props.onPageChange &&
+              this.props.onPageChange(page, query.pageSize);
+          });
+        });
+      } else {
+        this.dataManager.changeCurrentPage(page);
+        this.setState(
+          {
+            isLoading: false,
+            ...this.dataManager.getRenderState()
+          },
+          () => {
+            this.props.onPageChange &&
+              this.props.onPageChange(page, this.state.pageSize);
+          }
+        );
+      }
+    });
   };
 
   onRowsPerPageChange = (event) => {
     const pageSize = event.target.value;
-
-    this.dataManager.changePageSize(pageSize);
     const callback = () => {
       this.props.onPageChange && this.props.onPageChange(0, pageSize);
       this.props.onRowsPerPageChange &&
@@ -512,6 +520,7 @@ export default class MaterialTable extends React.Component {
     };
 
     this.setState({ isLoading: true }, () => {
+      this.dataManager.changePageSize(pageSize);
       if (this.isRemoteData()) {
         const query = { ...this.state.query };
         query.pageSize = event.target.value;
@@ -522,7 +531,7 @@ export default class MaterialTable extends React.Component {
       } else {
         this.dataManager.changeCurrentPage(0);
         this.setState(
-          { ...this.dataManager.getRenderState(), isLoading: false },
+          { isLoading: false, ...this.dataManager.getRenderState() },
           callback
         );
       }
