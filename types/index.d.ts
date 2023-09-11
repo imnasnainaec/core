@@ -61,7 +61,7 @@ export interface MaterialTableProps<RowData extends object> {
   options?: Options<RowData>;
   parentChildData?: (row: RowData, rows: RowData[]) => RowData | undefined;
   localization?: Localization;
-  onRowsPerPageChange?: (pageSize: number) => void;
+  onRowsPerPageChange?: (pageSize: number) => Promise<unknown>;
   onPageChange?: (page: number, pageSize: number) => void;
   onChangeColumnHidden?: (column: Column<RowData>, hidden: boolean) => void;
   onColumnDragged?: (sourceIndex: number, destinationIndex: number) => void;
