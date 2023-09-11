@@ -487,8 +487,7 @@ export default class MaterialTable extends React.Component {
   onPageChange = (event, page) => {
     this.setState({ isLoading: true }, () => {
       if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.page = page;
+        const query = { ...this.state.query, page: page };
         this.setState({ isLoading: false }, () => {
           this.onQueryChange(query, () => {
             this.props.onPageChange &&
@@ -513,27 +512,36 @@ export default class MaterialTable extends React.Component {
 
   onRowsPerPageChange = (event) => {
     const pageSize = event.target.value;
-    const callback = () => {
-      this.props.onPageChange && this.props.onPageChange(0, pageSize);
+    const callback = async () => {
+      this.props.onPageChange && (await this.props.onPageChange(0, pageSize));
       this.props.onRowsPerPageChange &&
-        this.props.onRowsPerPageChange(pageSize);
+        (await this.props.onRowsPerPageChange(pageSize));
     };
 
     this.setState({ isLoading: true }, () => {
-      this.dataManager.changePageSize(pageSize);
       if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.pageSize = event.target.value;
-        query.page = 0;
+        this.dataManager.changePageSize(pageSize);
+        const query = { ...this.state.query, page: 0, pageSize: pageSize };
         this.setState({ isLoading: false }, () => {
           this.onQueryChange(query, callback);
         });
       } else {
         this.dataManager.changeCurrentPage(0);
-        this.setState(
-          { isLoading: false, ...this.dataManager.getRenderState() },
-          callback
-        );
+        callback
+          .then(() => {
+            this.dataManager.changePageSize(pageSize);
+            this.setState({
+              isLoading: false,
+              ...this.dataManager.getRenderState()
+            });
+          })
+          .catch((reason) => {
+            const errorState = {
+              message: reason,
+              errorCause: 'change rows per page'
+            };
+            this.setState({ isLoading: false, errorState });
+          });
       }
     });
   };

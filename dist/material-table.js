@@ -6,6 +6,9 @@ Object.defineProperty(exports, '__esModule', {
   value: true
 });
 exports['default'] = void 0;
+var _regenerator = _interopRequireDefault(
+  require('@babel/runtime/regenerator')
+);
 var _LinearProgress2 = _interopRequireDefault(
   require('@mui/material/LinearProgress')
 );
@@ -24,6 +27,9 @@ var _Table2 = _interopRequireDefault(require('@mui/material/Table'));
 var _typeof2 = _interopRequireDefault(require('@babel/runtime/helpers/typeof'));
 var _slicedToArray2 = _interopRequireDefault(
   require('@babel/runtime/helpers/slicedToArray')
+);
+var _asyncToGenerator2 = _interopRequireDefault(
+  require('@babel/runtime/helpers/asyncToGenerator')
 );
 var _classCallCheck2 = _interopRequireDefault(
   require('@babel/runtime/helpers/classCallCheck')
@@ -276,8 +282,13 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           },
           function () {
             if (_this.isRemoteData()) {
-              var query = _objectSpread({}, _this.state.query);
-              query.page = page;
+              var query = _objectSpread(
+                _objectSpread({}, _this.state.query),
+                {},
+                {
+                  page: page
+                }
+              );
               _this.setState(
                 {
                   isLoading: false
@@ -313,21 +324,54 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
       'onRowsPerPageChange',
       function (event) {
         var pageSize = event.target.value;
-        var callback = function callback() {
-          _this.props.onPageChange && _this.props.onPageChange(0, pageSize);
-          _this.props.onRowsPerPageChange &&
-            _this.props.onRowsPerPageChange(pageSize);
-        };
+        var callback = /*#__PURE__*/ (function () {
+          var _ref = (0, _asyncToGenerator2['default'])(
+            /*#__PURE__*/ _regenerator['default'].mark(function _callee() {
+              return _regenerator['default'].wrap(function _callee$(_context) {
+                while (1)
+                  switch ((_context.prev = _context.next)) {
+                    case 0:
+                      _context.t0 = _this.props.onPageChange;
+                      if (!_context.t0) {
+                        _context.next = 4;
+                        break;
+                      }
+                      _context.next = 4;
+                      return _this.props.onPageChange(0, pageSize);
+                    case 4:
+                      _context.t1 = _this.props.onRowsPerPageChange;
+                      if (!_context.t1) {
+                        _context.next = 8;
+                        break;
+                      }
+                      _context.next = 8;
+                      return _this.props.onRowsPerPageChange(pageSize);
+                    case 8:
+                    case 'end':
+                      return _context.stop();
+                  }
+              }, _callee);
+            })
+          );
+          return function callback() {
+            return _ref.apply(this, arguments);
+          };
+        })();
         _this.setState(
           {
             isLoading: true
           },
           function () {
-            _this.dataManager.changePageSize(pageSize);
             if (_this.isRemoteData()) {
-              var query = _objectSpread({}, _this.state.query);
-              query.pageSize = event.target.value;
-              query.page = 0;
+              _this.dataManager.changePageSize(pageSize);
+              var query = _objectSpread(
+                _objectSpread({}, _this.state.query),
+                {},
+                {
+                  page: 0,
+                  pageSize: pageSize
+                }
+              );
               _this.setState(
                 {
                   isLoading: false
@@ -338,15 +382,28 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
               );
             } else {
               _this.dataManager.changeCurrentPage(0);
-              _this.setState(
-                _objectSpread(
-                  {
-                    isLoading: false
-                  },
-                  _this.dataManager.getRenderState()
-                ),
-                callback
-              );
+              callback
+                .then(function () {
+                  _this.dataManager.changePageSize(pageSize);
+                  _this.setState(
+                    _objectSpread(
+                      {
+                        isLoading: false
+                      },
+                      _this.dataManager.getRenderState()
+                    )
+                  );
+                })
+                ['catch'](function (reason) {
+                  var errorState = {
+                    message: reason,
+                    errorCause: 'change rows per page'
+                  };
+                  _this.setState({
+                    isLoading: false,
+                    errorState: errorState
+                  });
+                });
             }
           }
         );
@@ -499,10 +556,10 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
             function () {
               _this.props.editable
                 .onRowDelete(
-                  Object.entries(oldData).reduce(function (old, _ref) {
-                    var _ref2 = (0, _slicedToArray2['default'])(_ref, 2),
-                      key = _ref2[0],
-                      val = _ref2[1];
+                  Object.entries(oldData).reduce(function (old, _ref2) {
+                    var _ref3 = (0, _slicedToArray2['default'])(_ref2, 2),
+                      key = _ref3[0],
+                      val = _ref3[1];
                     if (key !== 'tableData') old[key] = val;
                     return old;
                   }, {})
@@ -1262,10 +1319,10 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           defaultCollectionSort.length > 0 &&
           maxColumnSort > 0
         ) {
-          defaultCollectionSort.forEach(function (_ref3) {
-            var orderBy = _ref3.orderBy,
-              orderDirection = _ref3.orderDirection,
-              sortOrder = _ref3.sortOrder;
+          defaultCollectionSort.forEach(function (_ref4) {
+            var orderBy = _ref4.orderBy,
+              orderDirection = _ref4.orderDirection,
+              sortOrder = _ref4.sortOrder;
             return _this3.dataManager.changeColumnOrder(
               orderBy,
               orderDirection,

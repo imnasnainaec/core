@@ -129,7 +129,13 @@ export interface Filter<RowData extends object> {
 }
 export interface ErrorState {
   message: string;
-  errorCause: 'query' | 'add' | 'update' | 'delete';
+  errorCause:
+    | 'add'
+    | 'bulk edit'
+    | 'change rows per page'
+    | 'delete'
+    | 'query'
+    | 'update';
 }
 
 export interface Query<RowData extends object> {
