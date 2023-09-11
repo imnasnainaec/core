@@ -1,7 +1,8 @@
 .docz
 .vscode
 dist_esbuild
-node_modules
+node_modules/*
+!node_modules/zustand
 yarn.lock
 .idea
 .DS_Store
