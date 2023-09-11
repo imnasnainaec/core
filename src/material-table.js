@@ -55,7 +55,9 @@ export default class MaterialTable extends React.Component {
       width: 0,
       tableInitialWidthPx: undefined,
       tableStyleWidth: '100%',
-      actions: calculatedProps.actions
+      actions: calculatedProps.actions,
+      updatePage: undefined,
+      updateRowsPerPage: undefined
     };
 
     this.tableContainerDiv = React.createRef();
@@ -259,6 +261,14 @@ export default class MaterialTable extends React.Component {
       !this.state.isLoading
     ) {
       this.onPageChange(null, Math.max(0, Math.ceil(count / pageSize) - 1));
+    }
+
+    if (this.state.updatePage !== undefined) {
+      this.changePage(this.state.updatePage);
+    }
+
+    if (this.state.updateRowsPerPage !== undefined) {
+      this.changeRowsPerPage(this.state.updateRowsPerPage);
     }
   }
 
@@ -485,57 +495,64 @@ export default class MaterialTable extends React.Component {
   };
 
   onPageChange = (event, page) => {
-    this.setState({ isLoading: true }, () => {
-      if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.page = page;
-        this.setState({ isLoading: false }, () => {
-          this.onQueryChange(query, () => {
-            this.props.onPageChange &&
-              this.props.onPageChange(page, query.pageSize);
-          });
+    this.setState({ isLoading: true, updatePage: page });
+  };
+
+  changePage = (page) => {
+    if (this.isRemoteData()) {
+      const query = { ...this.state.query };
+      query.page = page;
+      this.setState({ isLoading: false, updatePage: undefined }, () => {
+        this.onQueryChange(query, () => {
+          this.props.onPageChange &&
+            this.props.onPageChange(page, query.pageSize);
         });
-      } else {
-        this.dataManager.changeCurrentPage(page);
-        this.setState(
-          {
-            isLoading: false,
-            ...this.dataManager.getRenderState()
-          },
-          () => {
-            this.props.onPageChange &&
-              this.props.onPageChange(page, this.state.pageSize);
-          }
-        );
-      }
-    });
+      });
+    } else {
+      this.dataManager.changeCurrentPage(page);
+      this.setState(
+        {
+          isLoading: false,
+          updatePage: undefined,
+          ...this.dataManager.getRenderState()
+        },
+        () => {
+          this.props.onPageChange &&
+            this.props.onPageChange(page, this.state.pageSize);
+        }
+      );
+    }
   };
 
   onRowsPerPageChange = (event) => {
-    const pageSize = event.target.value;
+    this.setState({ isLoading: true, updateRowsPerPage: event.target.value });
+  };
+
+  changeRowsPerPage = (pageSize) => {
+    this.dataManager.changePageSize(pageSize);
     const callback = () => {
       this.props.onPageChange && this.props.onPageChange(0, pageSize);
       this.props.onRowsPerPageChange &&
         this.props.onRowsPerPageChange(pageSize);
     };
-
-    this.setState({ isLoading: true }, () => {
-      this.dataManager.changePageSize(pageSize);
-      if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.pageSize = event.target.value;
-        query.page = 0;
-        this.setState({ isLoading: false }, () => {
-          this.onQueryChange(query, callback);
-        });
-      } else {
-        this.dataManager.changeCurrentPage(0);
-        this.setState(
-          { isLoading: false, ...this.dataManager.getRenderState() },
-          callback
-        );
-      }
-    });
+    if (this.isRemoteData()) {
+      const query = { ...this.state.query };
+      query.pageSize = pageSize;
+      query.page = 0;
+      this.setState({ isLoading: false, updateRowsPerPage: undefined }, () => {
+        this.onQueryChange(query, callback);
+      });
+    } else {
+      this.dataManager.changeCurrentPage(0);
+      this.setState(
+        {
+          isLoading: false,
+          updateRowsPerPage: undefined,
+          ...this.dataManager.getRenderState()
+        },
+        callback
+      );
+    }
   };
 
   onDragEnd = (result) => {
