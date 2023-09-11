@@ -270,95 +270,86 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
       (0, _assertThisInitialized2['default'])(_this),
       'onPageChange',
       function (event, page) {
-        _this.setState({
-          isLoading: true,
-          updatePage: page
-        });
-      }
-    );
-    (0, _defineProperty2['default'])(
-      (0, _assertThisInitialized2['default'])(_this),
-      'changePage',
-      function (page) {
-        if (_this.isRemoteData()) {
-          var query = _objectSpread({}, _this.state.query);
-          query.page = page;
-          _this.setState(
-            {
-              isLoading: false,
-              updatePage: undefined
-            },
-            function () {
-              _this.onQueryChange(query, function () {
-                _this.props.onPageChange &&
-                  _this.props.onPageChange(page, query.pageSize);
-              });
+        _this.setState(
+          {
+            isLoading: true
+          },
+          function () {
+            if (_this.isRemoteData()) {
+              var query = _objectSpread({}, _this.state.query);
+              query.page = page;
+              _this.setState(
+                {
+                  isLoading: false
+                },
+                function () {
+                  _this.onQueryChange(query, function () {
+                    _this.props.onPageChange &&
+                      _this.props.onPageChange(page, query.pageSize);
+                  });
+                }
+              );
+            } else {
+              _this.dataManager.changeCurrentPage(page);
+              _this.setState(
+                _objectSpread(
+                  {
+                    isLoading: false
+                  },
+                  _this.dataManager.getRenderState()
+                ),
+                function () {
+                  _this.props.onPageChange &&
+                    _this.props.onPageChange(page, _this.state.pageSize);
+                }
+              );
             }
-          );
-        } else {
-          _this.dataManager.changeCurrentPage(page);
-          _this.setState(
-            _objectSpread(
-              {
-                isLoading: false,
-                updatePage: undefined
-              },
-              _this.dataManager.getRenderState()
-            ),
-            function () {
-              _this.props.onPageChange &&
-                _this.props.onPageChange(page, _this.state.pageSize);
-            }
-          );
-        }
+          }
+        );
       }
     );
     (0, _defineProperty2['default'])(
       (0, _assertThisInitialized2['default'])(_this),
       'onRowsPerPageChange',
       function (event) {
-        _this.setState({
-          isLoading: true,
-          updateRowsPerPage: event.target.value
-        });
-      }
-    );
-    (0, _defineProperty2['default'])(
-      (0, _assertThisInitialized2['default'])(_this),
-      'changeRowsPerPage',
-      function (pageSize) {
-        _this.dataManager.changePageSize(pageSize);
+        var pageSize = event.target.value;
         var callback = function callback() {
           _this.props.onPageChange && _this.props.onPageChange(0, pageSize);
           _this.props.onRowsPerPageChange &&
             _this.props.onRowsPerPageChange(pageSize);
         };
-        if (_this.isRemoteData()) {
-          var query = _objectSpread({}, _this.state.query);
-          query.pageSize = pageSize;
-          query.page = 0;
-          _this.setState(
-            {
-              isLoading: false,
-              updateRowsPerPage: undefined
-            },
-            function () {
-              _this.onQueryChange(query, callback);
+        _this.setState(
+          {
+            isLoading: true
+          },
+          function () {
+            _this.dataManager.changePageSize(pageSize);
+            if (_this.isRemoteData()) {
+              var query = _objectSpread({}, _this.state.query);
+              query.pageSize = event.target.value;
+              query.page = 0;
+              _this.setState(
+                {
+                  isLoading: false
+                },
+                function () {
+                  _this.onQueryChange(query, callback);
+                }
+              );
+            } else {
+              _this.dataManager.changeCurrentPage(0);
+              _this.setState(
+                _objectSpread(
+                  {
+                    isLoading: false
+                  },
+                  _this.dataManager.getRenderState()
+                ),
+                callback
+              );
             }
-          );
-        } else {
-          _this.dataManager.changeCurrentPage(0);
-          _this.setState(
-            _objectSpread(
-              {
-                isLoading: false,
-                updateRowsPerPage: undefined
-              },
-              _this.dataManager.getRenderState()
-            ),
-            callback
-          );
-        }
+          }
+        );
       }
     );
     (0, _defineProperty2['default'])(
@@ -1120,9 +1111,7 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
         width: 0,
         tableInitialWidthPx: undefined,
         tableStyleWidth: '100%',
-        actions: calculatedProps.actions,
-        updatePage: undefined,
-        updateRowsPerPage: undefined
+        actions: calculatedProps.actions
       }
     );
     _this.tableContainerDiv = /*#__PURE__*/ _react['default'].createRef();
@@ -1362,12 +1351,6 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           !this.state.isLoading
         ) {
           this.onPageChange(null, Math.max(0, Math.ceil(count / pageSize) - 1));
-        }
-        if (this.state.updatePage !== undefined) {
-          this.changePage(this.state.updatePage);
-        }
-        if (this.state.updateRowsPerPage !== undefined) {
-          this.changeRowsPerPage(this.state.updateRowsPerPage);
         }
       }
     },
