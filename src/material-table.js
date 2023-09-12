@@ -516,7 +516,6 @@ export default class MaterialTable extends React.Component {
       this.props.onPageChange && (await this.props.onPageChange(0, pageSize));
       this.props.onRowsPerPageChange &&
         (await this.props.onRowsPerPageChange(pageSize));
-      return Promise.resolve();
     };
 
     this.setState({ isLoading: true }, () => {

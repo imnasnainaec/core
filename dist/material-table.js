@@ -347,8 +347,6 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
                       _context.next = 8;
                       return _this.props.onRowsPerPageChange(pageSize);
                     case 8:
-                      return _context.abrupt('return', Promise.resolve());
-                    case 9:
                     case 'end':
                       return _context.stop();
                   }
