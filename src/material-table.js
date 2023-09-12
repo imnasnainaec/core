@@ -487,8 +487,7 @@ export default class MaterialTable extends React.Component {
   onPageChange = (event, page) => {
     this.setState({ isLoading: true }, () => {
       if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.page = page;
+        const query = { ...this.state.query, page: page };
         this.setState({ isLoading: false }, () => {
           this.onQueryChange(query, () => {
             this.props.onPageChange &&
@@ -522,9 +521,7 @@ export default class MaterialTable extends React.Component {
     this.setState({ isLoading: true }, () => {
       this.dataManager.changePageSize(pageSize);
       if (this.isRemoteData()) {
-        const query = { ...this.state.query };
-        query.pageSize = event.target.value;
-        query.page = 0;
+        const query = { ...this.state.query, page: 0, pageSize: pageSize };
         this.setState({ isLoading: false }, () => {
           this.onQueryChange(query, callback);
         });
