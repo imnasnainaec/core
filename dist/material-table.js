@@ -276,8 +276,13 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           },
           function () {
             if (_this.isRemoteData()) {
-              var query = _objectSpread({}, _this.state.query);
-              query.page = page;
+              var query = _objectSpread(
+                _objectSpread({}, _this.state.query),
+                {},
+                {
+                  page: page
+                }
+              );
               _this.setState(
                 {
                   isLoading: false
@@ -325,9 +330,14 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           function () {
             _this.dataManager.changePageSize(pageSize);
             if (_this.isRemoteData()) {
-              var query = _objectSpread({}, _this.state.query);
-              query.pageSize = event.target.value;
-              query.page = 0;
+              var query = _objectSpread(
+                _objectSpread({}, _this.state.query),
+                {},
+                {
+                  page: 0,
+                  pageSize: pageSize
+                }
+              );
               _this.setState(
                 {
                   isLoading: false
