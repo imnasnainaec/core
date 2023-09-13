@@ -291,8 +291,10 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
             });
           }
         };
-        if (_this.props.beforePageChange) {
-          _this.props.beforePageChange().then(mainFunction);
+        var promise =
+          _this.props.beforePageChange && _this.props.beforePageChange();
+        if (promise !== null && promise !== void 0 && promise.then) {
+          promise.then(mainFunction);
         } else {
           mainFunction();
         }
@@ -325,8 +327,10 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
             _this.setState(_this.dataManager.getRenderState(), callback);
           }
         };
-        if (_this.props.beforePageChange) {
-          _this.props.beforePageChange().then(mainFunction);
+        var promise =
+          _this.props.beforePageChange && _this.props.beforePageChange();
+        if (promise !== null && promise !== void 0 && promise.then) {
+          promise.then(mainFunction);
         } else {
           mainFunction();
         }

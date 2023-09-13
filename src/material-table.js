@@ -500,8 +500,10 @@ export default class MaterialTable extends React.Component {
         });
       }
     };
-    if (this.props.beforePageChange) {
-      this.props.beforePageChange().then(mainFunction);
+    const promise =
+      this.props.beforePageChange && this.props.beforePageChange();
+    if (promise?.then) {
+      promise.then(mainFunction);
     } else {
       mainFunction();
     }
@@ -524,8 +526,10 @@ export default class MaterialTable extends React.Component {
         this.setState(this.dataManager.getRenderState(), callback);
       }
     };
-    if (this.props.beforePageChange) {
-      this.props.beforePageChange().then(mainFunction);
+    const promise =
+      this.props.beforePageChange && this.props.beforePageChange();
+    if (promise?.then) {
+      promise.then(mainFunction);
     } else {
       mainFunction();
     }

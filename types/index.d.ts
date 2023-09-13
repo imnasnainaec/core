@@ -21,7 +21,7 @@ export interface MaterialTableProps<RowData extends object> {
     | ((rowData: RowData) => Action<RowData>)
     | { action: (rowData: RowData) => Action<RowData>; position: string }
   )[];
-  beforePageChange?: (page: number, pageSize: number) => Promise<void>;
+  beforePageChange?: (page: number, pageSize: number) => void | Promise<void>;
   cellEditable?: {
     cellStyle?: CellStyle<RowData>;
     onCellEditApproved: (
