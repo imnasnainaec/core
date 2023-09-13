@@ -270,47 +270,32 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
       (0, _assertThisInitialized2['default'])(_this),
       'onPageChange',
       function (event, page) {
-        _this.setState(
-          {
-            isLoading: true
-          },
-          function () {
-            if (_this.isRemoteData()) {
-              var query = _objectSpread(
-                _objectSpread({}, _this.state.query),
-                {},
-                {
-                  page: page
-                }
-              );
-              _this.setState(
-                {
-                  isLoading: false
-                },
-                function () {
-                  _this.onQueryChange(query, function () {
-                    _this.props.onPageChange &&
-                      _this.props.onPageChange(page, query.pageSize);
-                  });
-                }
-              );
-            } else {
-              _this.dataManager.changeCurrentPage(page);
-              _this.setState(
-                _objectSpread(
-                  {
-                    isLoading: false
-                  },
-                  _this.dataManager.getRenderState()
-                ),
-                function () {
-                  _this.props.onPageChange &&
-                    _this.props.onPageChange(page, _this.state.pageSize);
-                }
-              );
-            }
+        var mainFunction = function mainFunction() {
+          if (_this.isRemoteData()) {
+            var query = _objectSpread(
+              _objectSpread({}, _this.state.query),
+              {},
+              {
+                page: page
+              }
+            );
+            _this.onQueryChange(query, function () {
+              _this.props.onPageChange &&
+                _this.props.onPageChange(page, query.pageSize);
+            });
+          } else {
+            _this.dataManager.changeCurrentPage(page);
+            _this.setState(_this.dataManager.getRenderState(), function () {
+              _this.props.onPageChange &&
+                _this.props.onPageChange(page, _this.state.pageSize);
+            });
           }
-        );
+        };
+        if (_this.props.beforePageChange) {
+          _this.props.beforePageChange().then(mainFunction);
+        } else {
+          mainFunction();
+        }
       }
     );
     (0, _defineProperty2['default'])(
@@ -323,43 +308,28 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           _this.props.onRowsPerPageChange &&
             _this.props.onRowsPerPageChange(pageSize);
         };
-        _this.setState(
-          {
-            isLoading: true
-          },
-          function () {
-            _this.dataManager.changePageSize(pageSize);
-            if (_this.isRemoteData()) {
-              var query = _objectSpread(
-                _objectSpread({}, _this.state.query),
-                {},
-                {
-                  page: 0,
-                  pageSize: pageSize
-                }
-              );
-              _this.setState(
-                {
-                  isLoading: false
-                },
-                function () {
-                  _this.onQueryChange(query, callback);
-                }
-              );
-            } else {
-              _this.dataManager.changeCurrentPage(0);
-              _this.setState(
-                _objectSpread(
-                  {
-                    isLoading: false
-                  },
-                  _this.dataManager.getRenderState()
-                ),
-                callback
-              );
-            }
+        var mainFunction = function mainFunction() {
+          _this.dataManager.changePageSize(pageSize);
+          if (_this.isRemoteData()) {
+            var query = _objectSpread(
+              _objectSpread({}, _this.state.query),
+              {},
+              {
+                page: 0,
+                pageSize: pageSize
+              }
+            );
+            _this.onQueryChange(query, callback);
+          } else {
+            _this.dataManager.changeCurrentPage(0);
+            _this.setState(_this.dataManager.getRenderState(), callback);
           }
-        );
+        };
+        if (_this.props.beforePageChange) {
+          _this.props.beforePageChange().then(mainFunction);
+        } else {
+          mainFunction();
+        }
       }
     );
     (0, _defineProperty2['default'])(

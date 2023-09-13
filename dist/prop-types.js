@@ -51,6 +51,7 @@ var propTypes = {
       })
     ])
   ),
+  beforePageChange: _propTypes['default'].func,
   renderSummaryRow: _propTypes['default'].func,
   columns: _propTypes['default'].arrayOf(
     _propTypes['default'].shape({

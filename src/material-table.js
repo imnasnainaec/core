@@ -485,29 +485,26 @@ export default class MaterialTable extends React.Component {
   };
 
   onPageChange = (event, page) => {
-    this.setState({ isLoading: true }, () => {
+    const mainFunction = () => {
       if (this.isRemoteData()) {
         const query = { ...this.state.query, page: page };
-        this.setState({ isLoading: false }, () => {
-          this.onQueryChange(query, () => {
-            this.props.onPageChange &&
-              this.props.onPageChange(page, query.pageSize);
-          });
+        this.onQueryChange(query, () => {
+          this.props.onPageChange &&
+            this.props.onPageChange(page, query.pageSize);
         });
       } else {
         this.dataManager.changeCurrentPage(page);
-        this.setState(
-          {
-            isLoading: false,
-            ...this.dataManager.getRenderState()
-          },
-          () => {
-            this.props.onPageChange &&
-              this.props.onPageChange(page, this.state.pageSize);
-          }
-        );
+        this.setState(this.dataManager.getRenderState(), () => {
+          this.props.onPageChange &&
+            this.props.onPageChange(page, this.state.pageSize);
+        });
       }
-    });
+    };
+    if (this.props.beforePageChange) {
+      this.props.beforePageChange().then(mainFunction);
+    } else {
+      mainFunction();
+    }
   };
 
   onRowsPerPageChange = (event) => {
@@ -517,22 +514,21 @@ export default class MaterialTable extends React.Component {
       this.props.onRowsPerPageChange &&
         this.props.onRowsPerPageChange(pageSize);
     };
-
-    this.setState({ isLoading: true }, () => {
+    const mainFunction = () => {
       this.dataManager.changePageSize(pageSize);
       if (this.isRemoteData()) {
         const query = { ...this.state.query, page: 0, pageSize: pageSize };
-        this.setState({ isLoading: false }, () => {
-          this.onQueryChange(query, callback);
-        });
+        this.onQueryChange(query, callback);
       } else {
         this.dataManager.changeCurrentPage(0);
-        this.setState(
-          { isLoading: false, ...this.dataManager.getRenderState() },
-          callback
-        );
+        this.setState(this.dataManager.getRenderState(), callback);
       }
-    });
+    };
+    if (this.props.beforePageChange) {
+      this.props.beforePageChange().then(mainFunction);
+    } else {
+      mainFunction();
+    }
   };
 
   onDragEnd = (result) => {

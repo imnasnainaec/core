@@ -39,6 +39,7 @@ export const propTypes = {
       })
     ])
   ),
+  beforePageChange: PropTypes.func,
   renderSummaryRow: PropTypes.func,
   columns: PropTypes.arrayOf(
     PropTypes.shape({
