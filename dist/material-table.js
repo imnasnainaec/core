@@ -338,6 +338,20 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
     );
     (0, _defineProperty2['default'])(
       (0, _assertThisInitialized2['default'])(_this),
+      'onRowsPerPageChanging',
+      _this.props.onRowsPerPageChanging
+        ? function (event) {
+            var promise = _this.props.onRowsPerPageChanging();
+            if (promise !== null && promise !== void 0 && promise.then) {
+              promise.then(_this.onRowsPerPageChange(event));
+            } else {
+              _this.onRowsPerPageChange(event);
+            }
+          }
+        : undefined
+    );
+    (0, _defineProperty2['default'])(
+      (0, _assertThisInitialized2['default'])(_this),
       'onDragEnd',
       function (result) {
         if (!result || !result.source || !result.destination) return;
@@ -1575,6 +1589,17 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
           var totalCount = this.isRemoteData()
             ? props.totalCount
             : this.state.data.length;
+          var renderValue = function renderValue(value) {
+            return /*#__PURE__*/ _react['default'].createElement(
+              _Box2['default'],
+              {
+                sx: {
+                  padding: '0px 5px'
+                }
+              },
+              value + ' ' + props.localization.pagination.labelRows + ' '
+            );
+          };
           return /*#__PURE__*/ _react['default'].createElement(
             _Table2['default'],
             null,
@@ -1611,27 +1636,21 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
                       : totalCount,
                     rowsPerPage: this.state.pageSize,
                     rowsPerPageOptions: props.options.pageSizeOptions,
-                    SelectProps: {
-                      renderValue: function renderValue(value) {
-                        return /*#__PURE__*/ _react['default'].createElement(
-                          _Box2['default'],
-                          {
-                            sx: {
-                              padding: '0px 5px'
-                            }
-                          },
-                          value +
-                            ' ' +
-                            props.localization.pagination.labelRows +
-                            ' '
-                        );
-                      }
-                    },
+                    SelectProps: this.onRowsPerPageChanging
+                      ? {
+                          onChange: this.onRowsPerPageChanging,
+                          renderValue: renderValue
+                        }
+                      : {
+                          renderValue: renderValue
+                        },
                     page: this.isRemoteData()
                       ? this.state.query.page
                       : currentPage,
                     onPageChange: this.onPageChange,
-                    onRowsPerPageChange: this.onRowsPerPageChange,
+                    onRowsPerPageChange: this.onRowsPerPageChanging
+                      ? this.onRowsPerPageChange
+                      : undefined,
                     ActionsComponent: function ActionsComponent(subProps) {
                       return props.options.paginationType === 'normal'
                         ? /*#__PURE__*/ _react['default'].createElement(

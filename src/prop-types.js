@@ -439,6 +439,7 @@ export const propTypes = {
   onGroupChange: PropTypes.func,
   onSelectionChange: PropTypes.func,
   onRowsPerPageChange: PropTypes.func,
+  onRowsPerPageChanging: PropTypes.func,
   onPageChange: PropTypes.func,
   onChangeColumnHidden: PropTypes.func,
   onOrderChange: PropTypes.func,

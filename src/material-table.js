@@ -535,6 +535,17 @@ export default class MaterialTable extends React.Component {
     }
   };
 
+  onRowsPerPageChanging = this.props.onRowsPerPageChanging
+    ? (event) => {
+        const promise = this.props.onRowsPerPageChanging();
+        if (promise?.then) {
+          promise.then(this.onRowsPerPageChange(event));
+        } else {
+          this.onRowsPerPageChange(event);
+        }
+      }
+    : undefined;
+
   onDragEnd = (result) => {
     if (!result || !result.source || !result.destination) return;
     this.dataManager.changeByDrag(result);
@@ -910,6 +921,11 @@ export default class MaterialTable extends React.Component {
       const totalCount = this.isRemoteData()
         ? props.totalCount
         : this.state.data.length;
+      const renderValue = (value) => (
+        <Box sx={{ padding: '0px 5px' }}>
+          {value + ' ' + props.localization.pagination.labelRows + ' '}
+        </Box>
+      );
       return (
         <Table>
           <TableFooter style={{ display: 'grid' }}>
@@ -931,19 +947,23 @@ export default class MaterialTable extends React.Component {
                 }
                 rowsPerPage={this.state.pageSize}
                 rowsPerPageOptions={props.options.pageSizeOptions}
-                SelectProps={{
-                  renderValue: (value) => (
-                    <Box sx={{ padding: '0px 5px' }}>
-                      {value +
-                        ' ' +
-                        props.localization.pagination.labelRows +
-                        ' '}
-                    </Box>
-                  )
-                }}
+                SelectProps={
+                  this.onRowsPerPageChanging
+                    ? {
+                        onChange: this.onRowsPerPageChanging,
+                        renderValue: renderValue
+                      }
+                    : {
+                        renderValue: renderValue
+                      }
+                }
                 page={this.isRemoteData() ? this.state.query.page : currentPage}
                 onPageChange={this.onPageChange}
-                onRowsPerPageChange={this.onRowsPerPageChange}
+                onRowsPerPageChange={
+                  this.onRowsPerPageChanging
+                    ? this.onRowsPerPageChange
+                    : undefined
+                }
                 ActionsComponent={(subProps) =>
                   props.options.paginationType === 'normal' ? (
                     <MTablePagination

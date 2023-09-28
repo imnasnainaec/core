@@ -494,6 +494,7 @@ var propTypes = {
   onGroupChange: _propTypes['default'].func,
   onSelectionChange: _propTypes['default'].func,
   onRowsPerPageChange: _propTypes['default'].func,
+  onRowsPerPageChanging: _propTypes['default'].func,
   onPageChange: _propTypes['default'].func,
   onChangeColumnHidden: _propTypes['default'].func,
   onOrderChange: _propTypes['default'].func,
