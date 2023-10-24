@@ -79,7 +79,8 @@ function MTableCell(props) {
       align: cellAlignment,
       onClick: handleClickCell,
       ref: forwardedRef,
-      colSpan: props.colSpan
+      colSpan: props.colSpan,
+      'data-testid': 'mtablecell'
     }),
     props.children,
     renderValue

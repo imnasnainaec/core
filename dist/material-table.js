@@ -1210,8 +1210,10 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
         this.dataManager.setDefaultExpanded(props.options.defaultExpanded);
         this.dataManager.changeRowEditing();
         var _props$options = props.options,
+          clientSorting = _props$options.clientSorting,
           grouping = _props$options.grouping,
           maxColumnSort = _props$options.maxColumnSort;
+        this.dataManager.setClientSorting(clientSorting);
         this.dataManager.setMaxColumnSort(grouping ? 1 : maxColumnSort);
         this.dataManager.setOrderByCollection();
         if (this.isRemoteData(props)) {
@@ -1626,7 +1628,7 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
                       justifyContent: props.options.paginationAlignment
                         ? props.options.paginationAlignment
                         : 'flex-end',
-                      overflowX: 'auto',
+                      overflowX: props.options.overflowX,
                       '& .MuiTablePagination-displayedRows': {
                         display: 'none'
                       }

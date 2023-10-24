@@ -393,6 +393,15 @@ var propTypes = {
       _propTypes['default'].string
     ]),
     loadingType: _propTypes['default'].oneOf(['overlay', 'linear']),
+    overflowX: _propTypes['default'].oneOf([
+      'visible',
+      'hidden',
+      'scroll',
+      'auto',
+      'initial',
+      'inherit',
+      'overlay'
+    ]),
     overflowY: _propTypes['default'].oneOf([
       'visible',
       'hidden',
@@ -468,6 +477,7 @@ var propTypes = {
     showColumnSortOrder: _propTypes['default'].bool,
     sortOrderIndicatorStyle: _propTypes['default'].object,
     keepSortDirectionOnColumnSwitch: _propTypes['default'].bool,
+    clientSorting: _propTypes['default'].bool,
     toolbar: _propTypes['default'].bool,
     thirdSortClick: _propTypes['default'].bool,
     numberOfPagesAround: _propTypes['default'].oneOf([

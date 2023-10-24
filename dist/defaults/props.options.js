@@ -49,6 +49,7 @@ var _default = {
   selectionProps: {},
   // sorting: true,
   maxColumnSort: 1,
+  clientSorting: true,
   groupChipProps: {},
   defaultOrderByCollection: [],
   showColumnSortOrder: false,
@@ -61,6 +62,7 @@ var _default = {
     right: 0
   },
   thirdSortClick: true,
+  overflowX: 'auto',
   overflowY: 'auto',
   numberOfPagesAround: 1,
   actionsHeaderIndex: 0,

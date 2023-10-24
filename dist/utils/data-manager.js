@@ -150,6 +150,7 @@ var DataManager = /*#__PURE__*/ (function () {
     (0, _defineProperty2['default'])(this, 'defaultExpanded', false);
     (0, _defineProperty2['default'])(this, 'bulkEditOpen', false);
     (0, _defineProperty2['default'])(this, 'bulkEditChangedRows', {});
+    (0, _defineProperty2['default'])(this, 'clientSorting', true);
     (0, _defineProperty2['default'])(this, 'data', []);
     (0, _defineProperty2['default'])(this, 'columns', []);
     (0, _defineProperty2['default'])(this, 'filteredData', []);
@@ -736,6 +737,12 @@ var DataManager = /*#__PURE__*/ (function () {
       }
     },
     {
+      key: 'setClientSorting',
+      value: function setClientSorting(clientSorting) {
+        this.clientSorting = !!clientSorting;
+      }
+    },
+    {
       key: 'setMaxColumnSort',
       value: function setMaxColumnSort(maxColumnSort) {
         var availableColumnsLength = this.columns.filter(function (column) {
@@ -1297,6 +1304,9 @@ var DataManager = /*#__PURE__*/ (function () {
     {
       key: 'sortList',
       value: function sortList(list) {
+        if (!this.clientSorting) {
+          return list;
+        }
         var collectionIds = this.orderByCollection.map(function (collection) {
           return collection.orderBy;
         });

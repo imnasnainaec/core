@@ -632,7 +632,8 @@ function MTableBodyRow(_ref) {
             !hasAnyEditingRow && handleOnRowClick(event);
           },
           hover: !!(onRowClick || onRowDoubleClick),
-          style: getStyle(props.index, props.level)
+          style: getStyle(props.index, props.level),
+          'data-testid': 'mtablebodyrow'
         }
       ),
       renderColumns
