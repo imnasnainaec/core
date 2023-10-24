@@ -1628,7 +1628,7 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
                       justifyContent: props.options.paginationAlignment
                         ? props.options.paginationAlignment
                         : 'flex-end',
-                      overflowX: props.options.overflowX,
+                      overflowX: 'auto',
                       '& .MuiTablePagination-displayedRows': {
                         display: 'none'
                       }
@@ -1778,6 +1778,7 @@ var MaterialTable = /*#__PURE__*/ (function (_React$Component) {
                         style: {
                           maxHeight: props.options.maxBodyHeight,
                           minHeight: props.options.minBodyHeight,
+                          overflowX: props.options.overflowX,
                           overflowY: props.options.overflowY
                         }
                       },
