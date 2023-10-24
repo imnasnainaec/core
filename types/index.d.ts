@@ -419,6 +419,14 @@ export interface Options<RowData extends object> {
   // Show the sub rows of a group in brackets Name: Dominik (20)
   showGroupingCount?: boolean;
   groupTitle?: (groupData: object) => React.ReactNode;
+  overflowX?:
+    | 'visible'
+    | 'hidden'
+    | 'scroll'
+    | 'auto'
+    | 'initial'
+    | 'inherit'
+    | 'overlay';
   overflowY?:
     | 'visible'
     | 'hidden'

@@ -921,7 +921,7 @@ export default class MaterialTable extends React.Component {
                   justifyContent: props.options.paginationAlignment
                     ? props.options.paginationAlignment
                     : 'flex-end',
-                  overflowX: 'auto',
+                  overflowX: props.options.overflowX,
                   '& .MuiTablePagination-displayedRows': {
                     display: 'none'
                   }
