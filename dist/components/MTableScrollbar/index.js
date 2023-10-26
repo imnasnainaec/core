@@ -30,6 +30,16 @@ var ScrollBar = function ScrollBar(_ref) {
     children = _ref.children;
   if (_double) {
     return /*#__PURE__*/ _react['default'].createElement(
+      _Box2['default'],
+      {
+        sx: {
+          overflowX: 'auto',
+          position: 'relative'
+        }
+      },
+      children
+    );
+    return /*#__PURE__*/ _react['default'].createElement(
       _reactDoubleScrollbar['default'],
       null,
       children

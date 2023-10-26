@@ -20,6 +20,9 @@ const horizontalScrollContainer = {
 
 const ScrollBar = ({ double, children }) => {
   if (double) {
+    return (
+      <Box sx={{ overflowX: 'auto', position: 'relative' }}>{children}</Box>
+    );
     return <DoubleScrollbar>{children}</DoubleScrollbar>;
   } else {
     return <Box sx={horizontalScrollContainer}>{children}</Box>;
