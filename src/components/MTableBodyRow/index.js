@@ -21,7 +21,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
   const icons = useIconStore();
   const propsWithOptions = { ...props, options };
   const {
-    data,
+    data = {},
     components,
     detailPanel,
     getFieldValue,
@@ -34,13 +34,13 @@ function MTableBodyRow({ forwardedRef, ...props }) {
     onEditingApproved,
     hasAnyEditingRow,
     treeDataMaxLevel,
-    path,
-    actions,
+    path = [],
+    actions = [],
     errorState,
     cellEditable,
     onCellEditStarted,
     onCellEditFinished,
-    persistEvents,
+    persistEvents = false,
     scrollWidth,
     onRowClick,
     onRowDoubleClick,
@@ -77,11 +77,11 @@ function MTableBodyRow({ forwardedRef, ...props }) {
       .filter((columnDef) => !(columnDef.tableData.groupOrder > -1))
       .sort((a, b) => a.tableData.columnOrder - b.tableData.columnOrder)
       .map((columnDef) => {
-        const value = props.getFieldValue(props.data, columnDef);
+        const value = props.getFieldValue(data, columnDef);
 
         if (
-          props.data.tableData.editCellList &&
-          props.data.tableData.editCellList.find(
+          data.tableData.editCellList &&
+          data.tableData.editCellList.find(
             (c) => c.tableData.id === columnDef.tableData.id
           )
         ) {
@@ -93,10 +93,8 @@ function MTableBodyRow({ forwardedRef, ...props }) {
               localization={localization}
               columnDef={columnDef}
               size={size}
-              key={
-                'cell-' + props.data.tableData.id + '-' + columnDef.tableData.id
-              }
-              rowData={props.data}
+              key={'cell-' + data.tableData.id + '-' + columnDef.tableData.id}
+              rowData={data}
               cellEditable={props.cellEditable}
               onCellEditFinished={props.onCellEditFinished}
               scrollWidth={scrollWidth}
@@ -106,13 +104,10 @@ function MTableBodyRow({ forwardedRef, ...props }) {
           let isEditable =
             columnDef.editable !== 'never' && !!props.cellEditable;
           if (isEditable && props.cellEditable.isCellEditable) {
-            isEditable = props.cellEditable.isCellEditable(
-              props.data,
-              columnDef
-            );
+            isEditable = props.cellEditable.isCellEditable(data, columnDef);
           }
 
-          const key = `cell-${props.data.tableData.id}-${columnDef.tableData.id}`;
+          const key = `cell-${data.tableData.id}-${columnDef.tableData.id}`;
 
           return (
             <props.components.Cell
@@ -124,7 +119,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
               }}
               value={value}
               key={key}
-              rowData={props.data}
+              rowData={data}
               cellEditable={isEditable}
               onCellEditStarted={props.onCellEditStarted}
               scrollWidth={scrollWidth}
@@ -151,7 +146,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
         }}
       >
         <props.components.Actions
-          data={props.data}
+          data={data}
           actions={actions}
           components={props.components}
           size={size}
@@ -164,7 +159,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
   const renderSelectionColumn = () => {
     let checkboxProps = options.selectionProps || {};
     if (typeof checkboxProps === 'function') {
-      checkboxProps = checkboxProps(props.data);
+      checkboxProps = checkboxProps(data);
     }
 
     const selectionWidth =
@@ -173,15 +168,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
         props.treeDataMaxLevel
       ) || 0;
 
-    const styles =
-      size === 'medium'
-        ? {
-            marginLeft: props.level * 9 || 0
-          }
-        : {
-            padding: '4px',
-            marginLeft: 5 + props.level * 9 || 0
-          };
+    const styles = size !== 'medium' ? { padding: '4px' } : undefined;
 
     return (
       <TableCell
@@ -192,11 +179,11 @@ function MTableBodyRow({ forwardedRef, ...props }) {
       >
         <Checkbox
           size={size}
-          checked={props.data.tableData.checked === true}
+          checked={data.tableData.checked === true}
           onClick={(e) => e.stopPropagation()}
-          value={props.data.tableData.id.toString()}
+          value={data.tableData.id.toString()}
           onChange={(event) => {
-            props.onRowSelected(event, props.path, props.data);
+            props.onRowSelected(event, path, data);
           }}
           style={styles}
           {...checkboxProps}
@@ -230,10 +217,10 @@ function MTableBodyRow({ forwardedRef, ...props }) {
             size={size}
             style={{
               transition: 'all ease 200ms',
-              ...rotateIconStyle(props.data.tableData.showDetailPanel)
+              ...rotateIconStyle(data.tableData.showDetailPanel)
             }}
             onClick={(event) => {
-              props.onToggleDetailPanel(props.path, props.detailPanel);
+              props.onToggleDetailPanel(path, props.detailPanel);
               event.stopPropagation();
             }}
           >
@@ -254,11 +241,11 @@ function MTableBodyRow({ forwardedRef, ...props }) {
           >
             {props.detailPanel.map((panel, index) => {
               if (typeof panel === 'function') {
-                panel = panel(props.data);
+                panel = panel(data);
               }
 
               const isOpen =
-                (props.data.tableData.showDetailPanel || '').toString() ===
+                (data.tableData.showDetailPanel || '').toString() ===
                 panel.render.toString();
 
               let iconButton = <icons.DetailPanel />;
@@ -301,7 +288,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
                   }}
                   disabled={panel.disabled}
                   onClick={(event) => {
-                    props.onToggleDetailPanel(props.path, panel.render);
+                    props.onToggleDetailPanel(path, panel.render);
                     event.stopPropagation();
                   }}
                 >
@@ -329,10 +316,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
   };
 
   const renderTreeDataColumn = () => {
-    if (
-      props.data.tableData.childRows &&
-      props.data.tableData.childRows.length > 0
-    ) {
+    if (data.tableData.childRows && data.tableData.childRows.length > 0) {
       return (
         <TableCell
           size={size}
@@ -346,10 +330,10 @@ function MTableBodyRow({ forwardedRef, ...props }) {
             style={{
               transition: 'all ease 200ms',
               marginLeft: props.level * 9,
-              ...rotateIconStyle(props.data.tableData.isTreeExpanded)
+              ...rotateIconStyle(data.tableData.isTreeExpanded)
             }}
             onClick={(event) => {
-              props.onTreeExpandChanged(props.path, props.data);
+              props.onTreeExpandChanged(path, data);
               event.stopPropagation();
             }}
           >
@@ -368,7 +352,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
     if (typeof options.rowStyle === 'function') {
       style = {
         ...style,
-        ...options.rowStyle(props.data, index, level, props.hasAnyEditingRow)
+        ...options.rowStyle(data, index, level, props.hasAnyEditingRow)
       };
     } else if (options.rowStyle) {
       style = {
@@ -450,20 +434,21 @@ function MTableBodyRow({ forwardedRef, ...props }) {
           !hasAnyEditingRow && handleOnRowClick(event);
         }}
         hover={!!(onRowClick || onRowDoubleClick)}
-        style={getStyle(props.index, props.level)}
+        style={getStyle(rowProps.index || 0, props.level)}
+        data-testid="mtablebodyrow"
       >
         {renderColumns}
       </TableRow>
       <MTableDetailPanel
         options={options}
-        data={props.data}
+        data={data}
         detailPanel={props.detailPanel}
         renderColumns={renderColumns}
         size={size}
       />
-      {props.data.tableData.childRows &&
-        props.data.tableData.isTreeExpanded &&
-        props.data.tableData.childRows.map((data, index) => {
+      {data.tableData.childRows &&
+        data.tableData.isTreeExpanded &&
+        data.tableData.childRows.map((data, index) => {
           if (data.tableData.editing) {
             return (
               <props.components.EditRow
@@ -471,7 +456,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
                 components={props.components}
                 data={data}
                 icons={icons}
-                localization={localization}
+                localization={localization.editRow}
                 getFieldValue={props.getFieldValue}
                 key={index}
                 mode={data.tableData.editing}
@@ -490,7 +475,7 @@ function MTableBodyRow({ forwardedRef, ...props }) {
                 index={index}
                 key={index}
                 level={props.level + 1}
-                path={[...props.path, data.tableData.uuid]}
+                path={[...path, data.tableData.uuid]}
                 onEditingCanceled={onEditingCanceled}
                 onEditingApproved={onEditingApproved}
                 hasAnyEditingRow={props.hasAnyEditingRow}
@@ -506,14 +491,6 @@ function MTableBodyRow({ forwardedRef, ...props }) {
     </>
   );
 }
-
-MTableBodyRow.defaultProps = {
-  actions: [],
-  index: 0,
-  data: {},
-  path: [],
-  persistEvents: false
-};
 
 MTableBodyRow.propTypes = {
   forwardedRef: PropTypes.element,

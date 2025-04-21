@@ -28,6 +28,7 @@ export default class DataManager {
   defaultExpanded = false;
   bulkEditOpen = false;
   bulkEditChangedRows = {};
+  clientSorting = true;
 
   data = [];
   columns = [];
@@ -136,6 +137,7 @@ export default class DataManager {
       const tableData = {
         columnOrder: index,
         filterValue: columnDef.defaultFilter,
+        filterOperator: columnDef.defaultFilterOperator || '=',
         groupOrder: columnDef.defaultGroupOrder,
         groupSort: columnDef.defaultGroupSort || 'asc',
         width,
@@ -184,6 +186,10 @@ export default class DataManager {
     this.defaultExpanded = expanded;
   }
 
+  setClientSorting(clientSorting) {
+    this.clientSorting = !!clientSorting;
+  }
+
   setMaxColumnSort(maxColumnSort) {
     const availableColumnsLength = this.columns.filter(
       (column) => column.sorting !== false
@@ -210,7 +216,8 @@ export default class DataManager {
         return {
           orderBy: columnDef.tableData.id,
           sortOrder: undefined,
-          orderDirection: ''
+          orderDirection: '',
+          orderByField: columnDef.field
         };
       }
     });
@@ -268,6 +275,13 @@ export default class DataManager {
     this.filtered = false;
   }
 
+  changeFilterOperator(columnId, operator) {
+    const column = this.columns.find((c) => c.tableData.id === columnId);
+
+    column.tableData.filterOperator = operator;
+    this.filtered = false;
+  }
+
   changeRowSelected(checked, path) {
     const rowData = this.findDataByPath(this.sortedData, path);
     rowData.tableData.checked = checked;
@@ -310,6 +324,7 @@ export default class DataManager {
     }
 
     this.lastDetailPanelRow = rowData;
+    return rowData;
   }
 
   changeGroupExpand(path) {
@@ -803,6 +818,9 @@ export default class DataManager {
   }
 
   sortList(list) {
+    if (!this.clientSorting) {
+      return list;
+    }
     const collectionIds = this.orderByCollection.map(
       (collection) => collection.orderBy
     );
@@ -1092,14 +1110,20 @@ export default class DataManager {
 
           if (!group) {
             const path = [...(o.path || []), value];
+            let isDefaultExpanded = false;
+            switch (typeof this.defaultExpanded) {
+              case 'boolean':
+                isDefaultExpanded = this.defaultExpanded;
+                break;
+              case 'function':
+                isDefaultExpanded = this.defaultExpanded(currentRow);
+                break;
+            }
             const oldGroup = this.findGroupByGroupPath(
               this.groupedData,
               path
             ) || {
-              isExpanded:
-                typeof this.defaultExpanded === 'boolean'
-                  ? this.defaultExpanded
-                  : false
+              isExpanded: isDefaultExpanded
             };
 
             group = {
@@ -1209,10 +1233,15 @@ export default class DataManager {
         !this.columns.some((columnDef) => columnDef.tableData.filterValue)
       ) {
         if (rowData.tableData.isTreeExpanded === undefined) {
-          const isExpanded =
-            typeof this.defaultExpanded === 'boolean'
-              ? this.defaultExpanded
-              : this.defaultExpanded(rowData);
+          let isExpanded = false;
+          switch (typeof this.defaultExpanded) {
+            case 'boolean':
+              isDefaultExpanded = this.defaultExpanded;
+              break;
+            case 'function':
+              isDefaultExpanded = this.defaultExpanded(rowData);
+              break;
+          }
           rowData.tableData.isTreeExpanded = isExpanded;
         }
       }

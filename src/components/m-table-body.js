@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { TableBody, TableCell, TableRow } from '@mui/material';
 import { useLocalizationStore, useOptionStore, useIconStore } from '@store';
 
-function MTableBody(props) {
+function MTableBody(userProps) {
+  const props = { ...defaultProps, ...userProps };
   const localization = useLocalizationStore().body;
   const options = useOptionStore();
   const icons = useIconStore();
@@ -246,7 +247,7 @@ function MTableBody(props) {
   );
 }
 
-MTableBody.defaultProps = {
+const defaultProps = {
   actions: [],
   currentPage: 0,
   data: [],
@@ -292,7 +293,7 @@ MTableBody.propTypes = {
   renderData: PropTypes.array,
   renderSummaryRow: PropTypes.func,
   scrollWidth: PropTypes.number.isRequired,
-  selection: PropTypes.bool.isRequired,
+  selection: PropTypes.bool,
   showAddRow: PropTypes.bool,
   treeDataMaxLevel: PropTypes.number
 };

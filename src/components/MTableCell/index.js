@@ -13,7 +13,7 @@ function MTableCell(props) {
     rowData,
     onCellEditStarted,
     cellEditable,
-    columnDef,
+    columnDef = {},
     errorState,
     ...spreadProps
   } = props;
@@ -63,17 +63,13 @@ function MTableCell(props) {
       onClick={handleClickCell}
       ref={forwardedRef}
       colSpan={props.colSpan}
+      data-testid="mtablecell"
     >
       {props.children}
       {renderValue}
     </TableCell>
   );
 }
-
-MTableCell.defaultProps = {
-  columnDef: {},
-  value: undefined
-};
 
 MTableCell.propTypes = {
   columnDef: PropTypes.object.isRequired,

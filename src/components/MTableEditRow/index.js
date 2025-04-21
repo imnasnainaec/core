@@ -181,7 +181,8 @@ function MTableEditRow(props) {
         style={{
           width: 42 * actions.length,
           padding: '0px 5px',
-          ...options.editCellStyle
+          ...options.editCellStyle,
+          ...options.actionsCellStyle
         }}
       >
         <props.components.Actions
@@ -311,7 +312,7 @@ function MTableEditRow(props) {
     scrollWidth,
     forwardedRef,
     ...rowProps
-  } = props;
+  } = { ...defaultProps, ...props };
 
   return (
     <TableRow
@@ -325,7 +326,7 @@ function MTableEditRow(props) {
   );
 }
 
-MTableEditRow.defaultProps = {
+const defaultProps = {
   actions: [],
   index: 0,
   options: {},

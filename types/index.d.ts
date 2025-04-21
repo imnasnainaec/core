@@ -12,6 +12,7 @@ export interface OrderByCollection {
   orderBy: number;
   orderDirection: string;
   sortOrder: number;
+  orderByField: string;
 }
 
 export interface MaterialTableProps<RowData extends object> {
@@ -51,6 +52,7 @@ export interface MaterialTableProps<RowData extends object> {
     editTooltip?: (rowData: RowData) => string;
     deleteTooltip?: (rowData: RowData) => string;
     onRowAddCancelled?: (rowData: RowData) => void;
+    onRowDeleteCancelled?: (rowData: RowData) => void;
     onRowUpdateCancelled?: (rowData: RowData) => void;
     isEditHidden?: (rowData: RowData) => boolean;
     isDeleteHidden?: (rowData: RowData) => boolean;
@@ -97,6 +99,7 @@ export interface MaterialTableProps<RowData extends object> {
   onTreeExpandChange?: (data: any, isExpanded: boolean) => void;
   onQueryChange?: (query?: Query<RowData>) => void;
   onBulkEditOpen?: (isOpen: boolean) => void;
+  onDetailPanelChange?: (row: RowData, state: 'open' | 'closed') => void;
   renderSummaryRow?: ({
     columns,
     column,
@@ -224,6 +227,7 @@ export interface Column<RowData extends object> {
   //customExport prop handle flattening of data at column level before passing data to exporter. Note exportMenu.exportFunc is an alternative to handle data change at exporter level
   customExport?: (rowData: RowData) => unknown;
   defaultFilter?: any;
+  defaultFilterOperator?: string;
   filterOnItemSelect?: boolean;
   defaultGroupOrder?: number;
   id?: unknown;
@@ -472,6 +476,10 @@ export interface Options<RowData extends object> {
   maxColumnSort?: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | ALL_COLUMNS;
   showColumnSortOrder?: boolean;
   sortOrderIndicatorStyle?: React.CSSProperties;
+  /**
+   * Allow reordering rows if `true` (default). Set to `false` when original row ordering is to preserved (eg. data sorted from server).
+   **/
+  clientSorting?: boolean;
 }
 
 export interface Localization {

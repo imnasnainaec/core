@@ -37,7 +37,7 @@ export default class MaterialTable extends React.Component {
           .filter((a) => a.tableData.filterValue)
           .map((a) => ({
             column: a,
-            operator: '=',
+            operator: a.tableData.filterOperator,
             value: a.tableData.filterValue
           })),
         orderBy: renderState.columns.find(
@@ -125,7 +125,8 @@ export default class MaterialTable extends React.Component {
     this.dataManager.setDefaultExpanded(props.options.defaultExpanded);
     this.dataManager.changeRowEditing();
 
-    const { grouping, maxColumnSort } = props.options;
+    const { clientSorting, grouping, maxColumnSort } = props.options;
+    this.dataManager.setClientSorting(clientSorting);
     this.dataManager.setMaxColumnSort(grouping ? 1 : maxColumnSort);
     this.dataManager.setOrderByCollection();
 
@@ -464,9 +465,15 @@ export default class MaterialTable extends React.Component {
         (a) => a.tableData.id === orderBy
       );
       query.orderDirection = orderDirection;
-      console.warn(
-        'Properties orderBy and orderDirection had been deprecated when remote data, please start using orderByCollection instead'
-      );
+      /**
+       * THIS WILL NEED TO BE REMOVED EVENTUALLY.
+       * Warn consumer of deprecated prop.
+       */
+      if (query.orderDirection !== undefined || query.orderBy !== undefined) {
+        console.warn(
+          'Properties orderBy and orderDirection had been deprecated when remote data, please start using orderByCollection instead'
+        );
+      }
       query.orderByCollection = orderByCollection;
       this.onQueryChange(query, () => {
         this.props.onOrderChange &&
@@ -697,14 +704,16 @@ export default class MaterialTable extends React.Component {
   onEditingCanceled = (mode, rowData) => {
     if (mode === 'add') {
       this.props.editable.onRowAddCancelled &&
-        this.props.editable.onRowAddCancelled();
+        this.props.editable.onRowAddCancelled(rowData);
       this.setState({ showAddRow: false });
     } else if (mode === 'update') {
       this.props.editable.onRowUpdateCancelled &&
-        this.props.editable.onRowUpdateCancelled();
+        this.props.editable.onRowUpdateCancelled(rowData);
       this.dataManager.changeRowEditing(rowData);
       this.setState(this.dataManager.getRenderState());
     } else if (mode === 'delete') {
+      this.props.editable.onRowDeleteCancelled &&
+        this.props.editable.onRowDeleteCancelled(rowData);
       this.dataManager.changeRowEditing(rowData);
       this.setState(this.dataManager.getRenderState());
     }
@@ -800,8 +809,9 @@ export default class MaterialTable extends React.Component {
     }
   }, this.props.options.debounceInterval);
 
-  onFilterChange = (columnId, value) => {
+  onFilterChange = (columnId, value, operator = '=') => {
     this.dataManager.changeFilterValue(columnId, value);
+    this.dataManager.changeFilterOperator(columnId, operator);
     this.setState({}, this.onFilterChangeDebounce);
   };
 
@@ -813,7 +823,7 @@ export default class MaterialTable extends React.Component {
         .filter((a) => a.tableData.filterValue)
         .map((a) => ({
           column: a,
-          operator: '=',
+          operator: a.tableData.filterOperator,
           value: a.tableData.filterValue
         }));
 
@@ -827,7 +837,7 @@ export default class MaterialTable extends React.Component {
             .filter((a) => a.tableData.filterValue)
             .map((a) => ({
               column: a,
-              operator: '=',
+              operator: a.tableData.filterOperator,
               value: a.tableData.filterValue
             }));
           this.props.onFilterChange(appliedFilters);
@@ -845,8 +855,13 @@ export default class MaterialTable extends React.Component {
   };
 
   onToggleDetailPanel = (path, render) => {
-    this.dataManager.changeDetailPanelVisibility(path, render);
+    const row = this.dataManager.changeDetailPanelVisibility(path, render);
     this.setState(this.dataManager.getRenderState());
+    this.props.onTreeExpandChange &&
+      this.props.onDetailPanelChange(
+        row,
+        row.tableData.showDetailPanel ? 'open' : 'closed'
+      );
   };
 
   onCellEditStarted = (rowData, columnDef) => {

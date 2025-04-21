@@ -68,6 +68,7 @@ export const propTypes = {
       customSort: PropTypes.func,
       customExport: PropTypes.func,
       defaultFilter: PropTypes.any,
+      defaultFilterOperator: PropTypes.string,
       defaultSort: PropTypes.oneOf(['asc', 'desc']),
       editComponent: PropTypes.oneOfType([PropTypes.element, PropTypes.func]),
       emptyValue: PropTypes.oneOfType([
@@ -204,6 +205,7 @@ export const propTypes = {
     onRowUpdate: PropTypes.func,
     onRowDelete: PropTypes.func,
     onRowAddCancelled: PropTypes.func,
+    onRowDeleteCancelled: PropTypes.func,
     onRowUpdateCancelled: PropTypes.func,
     isEditHidden: PropTypes.func,
     isDeleteHidden: PropTypes.func
@@ -416,6 +418,7 @@ export const propTypes = {
     showColumnSortOrder: PropTypes.bool,
     sortOrderIndicatorStyle: PropTypes.object,
     keepSortDirectionOnColumnSwitch: PropTypes.bool,
+    clientSorting: PropTypes.bool,
     toolbar: PropTypes.bool,
     thirdSortClick: PropTypes.bool,
     numberOfPagesAround: PropTypes.oneOf([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])

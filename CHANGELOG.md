@@ -1,3 +1,81 @@
+#### 6.4.4 (2024-05-21)
+
+##### Other Changes
+
+- fix README broken parts and use md over html tags ([#848](https://github.com/material-table-core/core/pull/848)) ([2c12e400](https://github.com/material-table-core/core/commit/2c12e400e79daa157887ae6b57f257c0f99f27cb))
+
+#### 6.4.3 (2024-05-05)
+
+#### 6.4.2 (2024-05-02)
+
+#### 6.4.2 (2024-05-02)
+
+#### 6.4.1 (2024-04-06)
+
+#### 6.4.1 (2024-04-06)
+
+### 6.4.0 (2024-03-28)
+
+##### Other Changes
+
+- material-table-core/core ([7fd916a0](https://github.com/material-table-core/core/commit/7fd916a09b4a0da15dcc6c16508047052e1fdfde))
+
+### 6.4.0 (2024-03-28)
+
+##### Other Changes
+
+- material-table-core/core ([7fd916a0](https://github.com/material-table-core/core/commit/7fd916a09b4a0da15dcc6c16508047052e1fdfde))
+
+### 6.4.0 (2024-03-28)
+
+##### Other Changes
+
+- material-table-core/core ([7fd916a0](https://github.com/material-table-core/core/commit/7fd916a09b4a0da15dcc6c16508047052e1fdfde))
+
+#### 6.3.2 (2023-12-26)
+
+##### Other Changes
+
+- return rows of cancled edits ([f1191fb1](https://github.com/material-table-core/core/commit/f1191fb1b815b6a134e1461d5216bebdf90cdd95))
+
+#### 6.3.1 (2023-12-11)
+
+##### New Features
+
+- add the option to change the filter operator ([#816](https://github.com/material-table-core/core/pull/816)) ([1a5084ae](https://github.com/material-table-core/core/commit/1a5084ae3d674350626ceb8fbfc52fda997577d7))
+
+##### Other Changes
+
+- material-table-core/core ([10a7834b](https://github.com/material-table-core/core/commit/10a7834b24c894f96a4e71d94447712e9301077b))
+
+### 6.3.0 (2023-11-10)
+
+#### 6.2.11 (2023-10-05)
+
+#### 6.2.10 (2023-10-05)
+
+#### 6.2.9 (2023-10-05)
+
+#### 6.2.9 (2023-10-05)
+
+#### 6.2.8 (2023-10-05)
+
+#### 6.2.7 (2023-10-05)
+
+#### 6.2.6 (2023-10-05)
+
+#### 6.2.5 (2023-10-04)
+
+#### 6.2.4 (2023-09-13)
+
+##### Bug Fixes
+
+- adjust padding for selection grouping ([b786949a](https://github.com/material-table-core/core/commit/b786949aac3a6fc5b1a5545e387d00e57e448724))
+
+##### Other Changes
+
+- material-table-core/core ([4825590e](https://github.com/material-table-core/core/commit/4825590e18843bea62be250cf54a64a8dd1cb2cb))
+
 #### 6.2.3 (2023-08-19)
 
 #### 6.2.2 (2023-08-19)

@@ -248,6 +248,10 @@ export function MTableToolbar(props) {
               props.actions &&
               props.actions.filter((a) => a.position === diplayedActions)
             }
+            columns={props.columns}
+            onColumnsChanged={(col, hidden) =>
+              props.onColumnsChanged && props.onColumnsChanged(col, hidden)
+            }
             data={isSelectionActive ? selectedRows : undefined}
             components={props.components}
           />
@@ -314,7 +318,7 @@ export function MTableToolbar(props) {
   );
 }
 
-MTableToolbar.defaultProps = {
+const defaultProps = {
   actions: [],
   columns: [],
   columnsHiddenInColumnsButton: false, // By default, all columns are shown in the Columns Button (columns action when `options.columnsButton = true`)
